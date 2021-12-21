@@ -130,7 +130,7 @@ class Repository implements RepositoryInterface {
                 ($searchableField['name'] ?? $searchableField['field']) :
                 $searchableField;
 
-            if (!is_array($searchableField)) {
+            if (!is_array($searchableField) && in_array($field, array_keys($this->filters))) {
                 $this->query->where(
                     $this->getTableName() . "." . $field,
                     "=",
