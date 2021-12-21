@@ -11,8 +11,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class Repository implements RepositoryInterface
-{
+class Repository implements RepositoryInterface {
     /**
      * @var Model
      */
@@ -49,8 +48,7 @@ class Repository implements RepositoryInterface
      * @param int $pagination
      * @return AnonymousResourceCollection|null
      */
-    public function list(array $filters = [], array $with = [], $pagination = 45)
-    {
+    public function list(array $filters = [], array $with = [], $pagination = 45) {
         $this->applyFilters($filters);
         $query = $this->newQuery();
         $query->with($with);
@@ -67,8 +65,7 @@ class Repository implements RepositoryInterface
         return $this->present(true);
     }
 
-    public function findMany(array $filters = [], array $with = [])
-    {
+    public function findMany(array $filters = [], array $with = []) {
         $this->applyFilters($filters);
         $query = $this->newQuery();
         $query->with($with);
@@ -84,8 +81,7 @@ class Repository implements RepositoryInterface
         return $this->present(true);
     }
 
-    public function dd(array $filters = [], array $with = [], $pagination = false)
-    {
+    public function dd(array $filters = [], array $with = [], $pagination = false) {
         $this->applyFilters($filters);
         $query = $this->newQuery();
         $query->with($with);
@@ -103,8 +99,7 @@ class Repository implements RepositoryInterface
      * @param array $filters
      * @return Repository
      */
-    public function applyFilters(array $filters = [])
-    {
+    public function applyFilters(array $filters = []) {
         $this->filters = $filters;
         return $this;
     }
@@ -112,8 +107,7 @@ class Repository implements RepositoryInterface
     /**
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function newQuery()
-    {
+    public function newQuery() {
         $this->query = $this->model::query();
         if (!is_null($this->select)) {
             $this->query->select($this->select);
@@ -124,17 +118,26 @@ class Repository implements RepositoryInterface
     /**
      * Função para customizar os filtros aplicados na consulta
      */
-    protected function applyCustomFilters()
-    {
+    protected function applyCustomFilters() {
     }
 
     /**
      *
      */
-    public function injectFiltersOnQuery()
-    {
-        Foreach ($this->searchableFields as $searchableField) {
-            $field = $searchableField['name'] ?? $searchableField['field'] ?? $searchableField;
+    public function injectFiltersOnQuery() {
+        foreach ($this->searchableFields as $searchableField) {
+            $field = is_array($searchableField) ?
+                ($searchableField['name'] ?? $searchableField['field']) :
+                $searchableField;
+
+            if (!is_array($searchableField)) {
+                $this->query->where(
+                    $this->getTableName() . "." . $field,
+                    "=",
+                    $this->filters[$field]);
+                return;
+            }
+
             if (in_array($field, array_keys($this->filters))) {
                 $value = $this->filters[$field];
                 switch ($searchableField['operator'] ?? 'default') {
@@ -164,16 +167,14 @@ class Repository implements RepositoryInterface
      *
      * @return mixed
      */
-    public function getTableName()
-    {
+    public function getTableName() {
         return with(new $this->model)->getTable();
     }
 
     /**
      * @return $this
      */
-    protected function group(): Repository
-    {
+    protected function group(): Repository {
         $group = $this->groupBy ?? (new $this->model)->groupBy;
         if (isset($group)) {
             $this->query->groupBy($group);
@@ -184,8 +185,7 @@ class Repository implements RepositoryInterface
     /**
      * @return $this
      */
-    protected function order(): Repository
-    {
+    protected function order(): Repository {
         $order = $this->orderBy ?? (new $this->model)->orderBy;
         if (isset($order)) {
             $this->query->orderBy($order, $this->orderByType ?? (new $this->model)->orderByType ?? "asc");
@@ -197,8 +197,7 @@ class Repository implements RepositoryInterface
      * @param bool $return_empty
      * @return AnonymousResourceCollection|null
      */
-    public function present($return_empty = false)
-    {
+    public function present($return_empty = false) {
         if (!$this->returnable && !$return_empty) {
             throw new ModelNotFoundException();
         }
@@ -223,8 +222,7 @@ class Repository implements RepositoryInterface
      * @param array $with
      * @return AnonymousResourceCollection|null
      */
-    public function firstOrFail(array $filters = [], array $with = [])
-    {
+    public function firstOrFail(array $filters = [], array $with = []) {
         $this->applyFilters($filters);
         $query = $this->newQuery();
         $query->with($with);
@@ -241,8 +239,7 @@ class Repository implements RepositoryInterface
      * @param int $id
      * @return int
      */
-    public function destroy(int $id): int
-    {
+    public function destroy(int $id): int {
         return $this->model::destroy($id);
     }
 
@@ -251,8 +248,7 @@ class Repository implements RepositoryInterface
      * @param null $orderByType
      * @return $this
      */
-    public function setOrder($orderBy = null, $orderByType = null): Repository
-    {
+    public function setOrder($orderBy = null, $orderByType = null): Repository {
         $this->orderBy = $orderBy;
         $this->orderByType = $orderByType;
 
@@ -263,14 +259,12 @@ class Repository implements RepositoryInterface
      * @param null $groupBy
      * @return $this
      */
-    public function setGroup($groupBy = null): Repository
-    {
+    public function setGroup($groupBy = null): Repository {
         $this->groupBy = $groupBy;
         return $this;
     }
 
-    public function firstOrNew(array $attributes, array $values = [], array $relations = [])
-    {
+    public function firstOrNew(array $attributes, array $values = [], array $relations = []) {
         $first = $this->first($attributes);
         if (!empty($first)) {
             return $first;
@@ -283,8 +277,7 @@ class Repository implements RepositoryInterface
      * @param array $with
      * @return AnonymousResourceCollection|null
      */
-    public function first(array $filters = [], array $with = [])
-    {
+    public function first(array $filters = [], array $with = []) {
         $this->applyFilters($filters);
         $query = $this->newQuery();
         $query->with($with);
@@ -304,8 +297,7 @@ class Repository implements RepositoryInterface
      * @param array $relations
      * @return mixed|null
      */
-    public function storeOrUpdate($values, int $id = null, array $relations = [])
-    {
+    public function storeOrUpdate($values, int $id = null, array $relations = []) {
         $presenter = $this->presenter;
         $this->setPresenter(null);
         $this->setSelect();
@@ -329,8 +321,7 @@ class Repository implements RepositoryInterface
     /**
      * @param JsonResource $resource
      */
-    public function setPresenter($resource = null)
-    {
+    public function setPresenter($resource = null) {
         $this->presenter = $resource;
     }
 
@@ -338,8 +329,7 @@ class Repository implements RepositoryInterface
      * @param null|string|string[] $select
      * @return $this
      */
-    public function setSelect($select = null): Repository
-    {
+    public function setSelect($select = null): Repository {
         $this->select = $select;
         return $this;
     }
@@ -349,8 +339,7 @@ class Repository implements RepositoryInterface
      * @param array $with
      * @return AnonymousResourceCollection|null
      */
-    public function find($id, array $with = [])
-    {
+    public function find($id, array $with = []) {
         $query = $this->newQuery();
         $query->with($with);
         $this->returnable = $query->findOrFail($id);
@@ -361,8 +350,7 @@ class Repository implements RepositoryInterface
      * @param array $relations
      * @return bool
      */
-    public function persist(array $relations = [])
-    {
+    public function persist(array $relations = []) {
         if ($this->isPolymorphic()) {
             return $this->persistPolymorphic($relations);
         }
@@ -375,16 +363,14 @@ class Repository implements RepositoryInterface
     /**
      * @return bool
      */
-    public function isPolymorphic(): bool
-    {
+    public function isPolymorphic(): bool {
         return $this->polymorphic;
     }
 
     /**
      * @param bool $polymorphic
      */
-    public function setPolymorphic(bool $polymorphic): void
-    {
+    public function setPolymorphic(bool $polymorphic): void {
         $this->polymorphic = $polymorphic;
     }
 
@@ -392,10 +378,9 @@ class Repository implements RepositoryInterface
      * @param array $relations
      * @return bool
      */
-    public function persistPolymorphic(array $relations)
-    {
+    public function persistPolymorphic(array $relations) {
         $result = false;
-        Foreach ($relations as $relation) {
+        foreach ($relations as $relation) {
             $model = $relation['model'];
             $polymorphic = $relation['polymorphic'];
             $result = $model->$polymorphic()->save($this->returnable);
@@ -406,9 +391,8 @@ class Repository implements RepositoryInterface
     /**
      * @param array $relations
      */
-    public function associate(array $relations)
-    {
-        Foreach ($relations as $relation) {
+    public function associate(array $relations) {
+        foreach ($relations as $relation) {
             $relationship = $relation['name'];
             $this->returnable->$relationship()->associate($relation['model']);
         }
