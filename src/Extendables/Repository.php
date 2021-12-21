@@ -134,7 +134,7 @@ class Repository implements RepositoryInterface
     public function injectFiltersOnQuery()
     {
         Foreach ($this->searchableFields as $searchableField) {
-            $field = $searchableField['name'] ?? $searchableField['field'] ?? 'null';
+            $field = $searchableField['name'] ?? $searchableField['field'] ?? $searchableField;
             if (in_array($field, array_keys($this->filters))) {
                 $value = $this->filters[$field];
                 switch ($searchableField['operator'] ?? 'default') {
