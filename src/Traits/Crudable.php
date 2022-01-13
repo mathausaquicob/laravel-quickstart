@@ -54,7 +54,7 @@ trait Crudable {
             }
         }
 
-        dd($array);
+        dd(is_object($returnable), is_array($returnable));
         return $array;
     }
 }
