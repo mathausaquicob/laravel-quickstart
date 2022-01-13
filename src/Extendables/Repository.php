@@ -202,20 +202,18 @@ class Repository implements RepositoryInterface {
         }
 
         if (!$this->presenter) {
-            return $this->iso8859toutf8($this->returnable);
+            return $this->returnable;
         }
 
         if ($this->returnable instanceof LengthAwarePaginator) {
-            return $this->presenter::collection($this->iso8859toutf8($this->returnable));
+            return $this->presenter::collection($this->returnable);
         }
 
         $model_class = get_class(new $this->model());
-
         if ($this->returnable instanceof $model_class) {
-            return new $this->presenter($this->iso8859toutf8($this->returnable));
+            return new $this->presenter($this->returnable);
         }
-
-        return $this->iso8859toutf8($this->returnable);
+        return $this->returnable;
     }
 
     /**
