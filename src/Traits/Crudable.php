@@ -42,4 +42,21 @@ trait Crudable
             $this->resource = Resource::class;
         }
     }
+
+
+    public function iso8859toutf8($returnable) {
+        $array = [];
+        dd($returnable);
+        if (is_object($returnable) || is_array($returnable)) {
+            foreach ($returnable as $key => $returnable_value) {
+                if (is_string($returnable_value)) {
+                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = iconv("ISO-8859-1", "UTF-8", $returnable_value);
+                } else if(is_object($returnable_value) || is_array($returnable_value)) {
+                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = $this->iso8859toutf8($returnable_value);
+                }
+            }
+        }
+
+        return $array;
+    }
 }

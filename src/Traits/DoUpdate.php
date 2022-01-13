@@ -18,6 +18,6 @@ trait DoUpdate
     public function update(int $id)
     {
         $sanitized = request()->all();
-        return new $this->resource($this->manager->storeOrUpdate($sanitized, $id));
+        return new $this->resource($this->iso8859toutf8($this->manager->storeOrUpdate($sanitized, $id)));
     }
 }
