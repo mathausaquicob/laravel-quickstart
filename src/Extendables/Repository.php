@@ -195,7 +195,6 @@ class Repository implements RepositoryInterface {
 
     /**
      * @param bool $return_empty
-     * @return AnonymousResourceCollection|null
      */
     public function present($return_empty = false) {
         if (!$this->returnable && !$return_empty) {
@@ -203,24 +202,25 @@ class Repository implements RepositoryInterface {
         }
 
         if (!$this->presenter) {
-            return $this->returnable;
+            return $this->iso8859toutf8($this->returnable);
         }
 
         if ($this->returnable instanceof LengthAwarePaginator) {
-            return $this->presenter::collection($this->returnable);
+            return $this->presenter::collection($this->iso8859toutf8($this->returnable));
         }
 
         $model_class = get_class(new $this->model());
+
         if ($this->returnable instanceof $model_class) {
-            return new $this->presenter($this->returnable);
+            return new $this->presenter($this->iso8859toutf8($this->returnable));
         }
-        return $this->returnable;
+
+        return $this->iso8859toutf8($this->returnable);
     }
 
     /**
      * @param array $filters
      * @param array $with
-     * @return AnonymousResourceCollection|null
      */
     public function firstOrFail(array $filters = [], array $with = []) {
         $this->applyFilters($filters);
@@ -275,7 +275,6 @@ class Repository implements RepositoryInterface {
     /**
      * @param array $filters
      * @param array $with
-     * @return AnonymousResourceCollection|null
      */
     public function first(array $filters = [], array $with = []) {
         $this->applyFilters($filters);
@@ -337,7 +336,6 @@ class Repository implements RepositoryInterface {
     /**
      * @param int $id
      * @param array $with
-     * @return AnonymousResourceCollection|null
      */
     public function find($id, array $with = []) {
         $query = $this->newQuery();
@@ -398,5 +396,20 @@ class Repository implements RepositoryInterface {
         }
     }
 
+    public function iso8859toutf8($returnable) {
+        $array = [];
+
+        if (is_object($returnable) || is_array($returnable)) {
+            foreach ($returnable as $key => $returnable_value) {
+                if (is_string($returnable_value)) {
+                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = iconv("ISO-8859-1", "UTF-8", $returnable_value);
+                } else if(is_object($returnable_value) || is_array($returnable_value)) {
+                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = $this->iso8859toutf8($returnable_value);
+                }
+            }
+        }
+
+        return $array;
+    }
 
 }
