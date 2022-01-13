@@ -46,8 +46,6 @@ trait Crudable {
         $array = [];
         if (is_object($returnable) || is_array($returnable)) {
             foreach ($returnable as $key => $returnable_value) {
-
-                dd($returnable[$key], $key, $returnable_value);
                 if (is_string($returnable_value)) {
                     $array[iconv("ISO-8859-1", "UTF-8", $key)] = iconv("ISO-8859-1", "UTF-8", $returnable_value);
                 } else if (is_object($returnable_value) || is_array($returnable_value)) {
@@ -56,6 +54,7 @@ trait Crudable {
             }
         }
 
+        dd($array);
         return $array;
     }
 }
