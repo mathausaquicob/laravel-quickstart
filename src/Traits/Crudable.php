@@ -6,8 +6,7 @@ use Freelabois\LaravelQuickstart\Extendables\Resource;
 use Freelabois\LaravelQuickstart\Interfaces\ManipulationManagerInterface;
 use Freelabois\LaravelQuickstart\Interfaces\RepositoryInterface;
 
-trait Crudable
-{
+trait Crudable {
     use
         DoIndex,
         DoStore,
@@ -33,12 +32,11 @@ trait Crudable
     public function setup(
         ManipulationManagerInterface $manager,
         RepositoryInterface $repository
-    )
-    {
+    ) {
         $this->manager = $manager;
         $this->repository = $repository;
 
-        if(!isset($this->resource)){
+        if (!isset($this->resource)) {
             $this->resource = Resource::class;
         }
     }
@@ -46,12 +44,13 @@ trait Crudable
 
     public function iso8859toutf8($returnable) {
         $array = [];
-        dd($returnable);
         if (is_object($returnable) || is_array($returnable)) {
             foreach ($returnable as $key => $returnable_value) {
+
+                dd($returnable[$key], $key, $returnable_value);
                 if (is_string($returnable_value)) {
                     $array[iconv("ISO-8859-1", "UTF-8", $key)] = iconv("ISO-8859-1", "UTF-8", $returnable_value);
-                } else if(is_object($returnable_value) || is_array($returnable_value)) {
+                } else if (is_object($returnable_value) || is_array($returnable_value)) {
                     $array[iconv("ISO-8859-1", "UTF-8", $key)] = $this->iso8859toutf8($returnable_value);
                 }
             }
