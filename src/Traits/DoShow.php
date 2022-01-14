@@ -18,6 +18,6 @@ trait DoShow
     public function show($id)
     {
         $with = request()->get('with') ?? [];
-        return new $this->resource($this->repository->find($id, $with));
+        return new $this->iso8859toutf8($this->resource($this->repository->find($id, $with)));
     }
 }

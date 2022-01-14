@@ -17,6 +17,6 @@ trait DoDestroy
      */
     public function destroy($id)
     {
-        return $this->manager->destroy($id);
+        return $this->iso8859toutf8($this->manager->destroy($id));
     }
 }
