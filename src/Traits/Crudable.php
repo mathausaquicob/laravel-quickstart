@@ -50,10 +50,11 @@ trait Crudable {
                 $array[iconv("ISO-8859-1", "UTF-8", $att_key)] = $this->iso8859toutf8($attribute_value);
             }
 
-            foreach ($returnable->getRelations() as $relationship) {
-                if ($returnable->relationLoaded($relationship)) {
-                    $array[iconv("ISO-8859-1", "UTF-8", $relationship)] = $this->iso8859toutf8($returnable->{$relationship});
-                }
+            foreach ($returnable->getRelations() as $rel_key => $relationship) {
+                dd($rel_key, $relationship);
+
+                $array[iconv("ISO-8859-1", "UTF-8", $rel_key)] = $this->iso8859toutf8($returnable->{$relationship});
+
             }
 
         }
