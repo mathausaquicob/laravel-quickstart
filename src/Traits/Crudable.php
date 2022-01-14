@@ -44,18 +44,44 @@ trait Crudable {
 
     public function iso8859toutf8($returnable) {
         $array = [];
-        if (is_object($returnable) || is_array($returnable)) {
-            foreach ($returnable as $key => $returnable_value) {
-                dump($key, $returnable_value);
-                if (is_string($returnable_value)) {
-                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = iconv("ISO-8859-1", "UTF-8", $returnable_value);
-                } else if (is_object($returnable_value) || is_array($returnable_value)) {
-                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = $this->iso8859toutf8($returnable_value);
-                }
+
+
+        if($returnable instanceof \Illuminate\Database\Eloquent\Model) {
+            foreach ($returnable->getAttributes() as $att_key => $attribute_value) {
+                $array[iconv("ISO-8859-1", "UTF-8", $att_key)] = $this->iso8859toutf8($attribute_value);
             }
         }
 
-        dd(is_object($returnable), is_array($returnable));
+        if (is_string($returnable)) {
+            return iconv("ISO-8859-1", "UTF-8", $returnable);
+        }
+
+        if (is_bool($returnable)) {
+            return $returnable;
+        }
+
+        if (is_object($returnable) || is_array($returnable)) {
+            foreach ($returnable as $key => $returnable_value) {
+//                dump($key, $returnable_value);
+
+                $array[iconv("ISO-8859-1", "UTF-8", $key)] = $this->iso8859toutf8($returnable_value);
+//                if (is_string($returnable_value)) {
+//                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = iconv("ISO-8859-1", "UTF-8", $returnable_value);
+//                } else if (is_object($returnable_value) || is_array($returnable_value)) {
+//                    $array[iconv("ISO-8859-1", "UTF-8", $key)] ;
+//                } else if (is_bool($returnable_value)) {
+//                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = $returnable_value;
+//                } else if ($returnable_value instanceof \Illuminate\Database\Eloquent\Model) {
+//
+//                }
+            }
+        }
+
+
+
+
+
+//        dd(is_object($returnable), is_array($returnable));
         return $array;
     }
 }
