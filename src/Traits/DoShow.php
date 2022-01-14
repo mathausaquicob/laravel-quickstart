@@ -13,11 +13,10 @@ trait DoShow
      * Display the specified resource.
      *
      * @param int $id
-     * @return Response
      */
     public function show($id)
     {
         $with = request()->get('with') ?? [];
-        return new $this->resource($this->iso8859toutf8($this->repository->find($id, $with)));
+        return $this->iso8859toutf8($this->repository->find($id, $with));
     }
 }
