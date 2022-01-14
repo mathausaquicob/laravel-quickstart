@@ -45,10 +45,15 @@ trait Crudable {
     public function iso8859toutf8($returnable) {
         $array = [];
 
-        if($returnable instanceof \Illuminate\Database\Eloquent\Model) {
+        if ($returnable instanceof \Illuminate\Database\Eloquent\Model) {
             foreach ($returnable->getAttributes() as $att_key => $attribute_value) {
                 $array[iconv("ISO-8859-1", "UTF-8", $att_key)] = $this->iso8859toutf8($attribute_value);
             }
+
+            foreach ($returnable->getRelations() as $rel_key => $relationship) {
+                $array[iconv("ISO-8859-1", "UTF-8", $rel_key)] = $this->iso8859toutf8($returnable->{$relationship});
+            }
+
         }
 
         if (is_string($returnable)) {
@@ -60,14 +65,11 @@ trait Crudable {
         }
 
 
-
         if (is_object($returnable) || is_array($returnable)) {
             foreach ($returnable as $key => $returnable_value) {
                 $array[iconv("ISO-8859-1", "UTF-8", $key)] = $this->iso8859toutf8($returnable_value);
             }
         }
-
-
 
 
         return $array;
