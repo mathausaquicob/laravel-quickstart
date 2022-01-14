@@ -51,10 +51,7 @@ trait Crudable {
             }
 
             foreach ($returnable->getRelations() as $rel_key => $relationship) {
-                dd($rel_key, $relationship);
-
                 $array[iconv("ISO-8859-1", "UTF-8", $rel_key)] = $this->iso8859toutf8($returnable->{$relationship});
-
             }
 
         }
@@ -66,7 +63,6 @@ trait Crudable {
         if (is_bool($returnable) || is_numeric($returnable) || is_null($returnable)) {
             return $returnable;
         }
-
 
         if (is_object($returnable) || is_array($returnable)) {
             foreach ($returnable as $key => $returnable_value) {
