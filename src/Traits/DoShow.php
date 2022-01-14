@@ -18,7 +18,7 @@ trait DoShow
     {
         $with = request()->get('with') ?? [];
         dd('a');
-        dd($this->iso8859toutf8($this->repository->find($id, $with)));
+        dd($this->repository->find($id, $with));
         return $this->iso8859toutf8($this->repository->find($id, $with));
     }
 }
