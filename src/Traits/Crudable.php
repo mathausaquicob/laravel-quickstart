@@ -66,7 +66,12 @@ trait Crudable {
 
         if (is_object($returnable) || is_array($returnable)) {
             foreach ($returnable as $key => $returnable_value) {
-                $array[iconv("ISO-8859-1", "UTF-8", $key)] = $this->iso8859toutf8($returnable_value);
+
+                if (!in_array($key, ['timestamps', 'incrementing', 'preventsLazyLoading','exists',
+                    'wasRecentlyCreated'])) {
+                    $array[iconv("ISO-8859-1", "UTF-8", $key)] = $this->iso8859toutf8($returnable_value);
+
+                }
             }
         }
 
