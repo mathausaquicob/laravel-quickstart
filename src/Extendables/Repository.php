@@ -339,7 +339,7 @@ class Repository implements RepositoryInterface {
         $query = $this->newQuery();
         $query->with($with);
         $this->returnable = $query->findOrFail($id);
-        return $this->present(true);
+        return $this->present();
     }
 
     /**
