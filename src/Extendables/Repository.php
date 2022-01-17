@@ -135,7 +135,7 @@ class Repository implements RepositoryInterface {
                     $this->getTableName() . "." . $field,
                     "=",
                     $this->filters[$field]);
-                return;
+//                return;
             }
 
             if (in_array($field, array_keys($this->filters))) {
