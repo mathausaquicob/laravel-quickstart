@@ -126,7 +126,7 @@ class Repository implements RepositoryInterface {
      */
     public function injectFiltersOnQuery() {
 //        dump($this->filters);
-        foreach ($this->searchableFields as $searchableField) {
+        foreach (array_unique($this->searchableFields) as $searchableField) {
             $field = is_array($searchableField) ?
                 ($searchableField['name'] ?? $searchableField['field']) :
                 $searchableField;
