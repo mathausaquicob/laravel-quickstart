@@ -125,12 +125,15 @@ class Repository implements RepositoryInterface {
      *
      */
     public function injectFiltersOnQuery() {
+        dump($this->filters);
         foreach ($this->searchableFields as $searchableField) {
             $field = is_array($searchableField) ?
                 ($searchableField['name'] ?? $searchableField['field']) :
                 $searchableField;
 
 //            dump($field, array_keys($this->filters));
+
+            dump($searchableField, $field);
             if (!is_array($searchableField) && in_array($field, array_keys($this->filters))) {
                 $this->query->where(
                     $this->getTableName() . "." . $field,
