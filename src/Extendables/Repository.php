@@ -125,7 +125,7 @@ class Repository implements RepositoryInterface {
      *
      */
     public function injectFiltersOnQuery() {
-        dump($this->filters);
+//        dump($this->filters);
         foreach ($this->searchableFields as $searchableField) {
             $field = is_array($searchableField) ?
                 ($searchableField['name'] ?? $searchableField['field']) :
@@ -133,15 +133,15 @@ class Repository implements RepositoryInterface {
 
 //            dump($field, array_keys($this->filters));
 
-            dump($searchableField, $field);
+//            dump($searchableField, $field);
             if (!is_array($searchableField) && in_array($field, array_keys($this->filters))) {
                 $this->query->where(
                     $this->getTableName() . "." . $field,
                     "=",
                     $this->filters[$field]);
-//                return;
+                continue;
             }
-
+//            dd($field, array_keys($this->filters));
             if (in_array($field, array_keys($this->filters))) {
                 $value = $this->filters[$field];
                 switch ($searchableField['operator'] ?? 'default') {
