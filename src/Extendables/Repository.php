@@ -52,13 +52,12 @@ class Repository implements RepositoryInterface {
         $this->applyFilters($filters);
         $query = $this->newQuery();
         $query->with($with);
-        if ($pagination === "false" || $pagination === false) {
-            $pagination = 9223372036854775807;
-        }
+
         if (!empty($this->filters)) {
             $this->applyCustomFilters();
             $this->injectFiltersOnQuery();
         }
+
         $this->group();
         $this->order();
         $this->returnable = $query->paginate($pagination);
@@ -125,15 +124,11 @@ class Repository implements RepositoryInterface {
      *
      */
     public function injectFiltersOnQuery() {
-//        dump($this->filters);
         foreach (array_unique($this->searchableFields) as $searchableField) {
             $field = is_array($searchableField) ?
                 ($searchableField['name'] ?? $searchableField['field']) :
                 $searchableField;
 
-//            dump($field, array_keys($this->filters));
-
-//            dump($searchableField, $field);
             if (!is_array($searchableField) && in_array($field, array_keys($this->filters))) {
                 $this->query->where(
                     $this->getTableName() . "." . $field,
@@ -141,7 +136,7 @@ class Repository implements RepositoryInterface {
                     $this->filters[$field]);
                 continue;
             }
-//            dd($field, array_keys($this->filters));
+
             if (in_array($field, array_keys($this->filters))) {
                 $value = $this->filters[$field];
                 switch ($searchableField['operator'] ?? 'default') {

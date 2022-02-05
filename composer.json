@@ -1,5 +1,5 @@
 {
-    "name": "aquicob/laravel-quickstart-new",
+    "name": "mathaus/new-quickstart-laravel",
     "description": "Laravel Quickstart",
     "license": "MIT",
     "authors": [
@@ -15,6 +15,10 @@
         {
             "email": "vitorkamida@gmail.com",
             "name": "Vitor Kamida"
+        },
+        {
+            "email": "mathaus.adorno@gmail.com",
+            "name": "Mathaus Adorno Pereira"
         }
     ],
     "homepage": "https://github.com/freelabois/laravel-quickstart",

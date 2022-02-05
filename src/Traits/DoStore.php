@@ -18,6 +18,6 @@ trait DoStore
     public function store()
     {
         $sanitized = request()->all();
-        return new $this->resource($this->iso8859toutf8($this->manager->storeOrUpdate($sanitized)));
+        return new $this->resource($this->manager->storeOrUpdate($sanitized));
     }
 }

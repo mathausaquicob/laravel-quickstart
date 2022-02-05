@@ -18,6 +18,6 @@ trait DoIndex {
 
         $method = is_null(request()->get('perPage')) ? 'findMany' : 'list';
 
-        return $this->resource::collection($this->iso8859toutf8($this->repository->{$method}($sanitized, $with, $perPage)));
+        return $this->resource::collection($this->repository->{$method}($sanitized, $with, $perPage));
     }
 }
